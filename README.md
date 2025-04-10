@@ -1,38 +1,73 @@
-# sv
+# Water Tracker
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A simple Svelte application that helps track daily water consumption, demonstrating the use of Svelte's reactive state management features.
 
-## Creating a project
+## Features
 
-If you're seeing this, you've probably already done this step. Congrats!
+- Track water consumption with preset amounts
+- Visualize progress towards daily water intake goals
+- Automatically save data using localStorage
+- Display time of last drink
 
-```bash
-# create a new project in the current directory
-npx sv create
+## Svelte State Management Demo
 
-# create a new project in my-app
-npx sv create my-app
+This app demonstrates key Svelte state management concepts:
+
+### `$state`
+
+The app uses Svelte's `$state` for reactive variables:
+
+```ts
+let waterConsumed = $state(0);
+let dailyGoal = $state(2000);
+let lastDrink: Date | null = $state(null);
 ```
 
-## Developing
+### `$derived`
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Derived state automatically updates when dependencies change:
 
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+```ts
+const blocksToFill = $derived(Math.min(Math.floor(waterConsumed / 100), 20));
+const waterBlocks = $derived(
+  Array(20)
+    .fill(false)
+    .map((_, index) => index < blocksToFill)
+);
 ```
 
-## Building
+### `$effect`
 
-To create a production version of your app:
+Effects run when dependencies change, perfect for side effects like saving to localStorage:
 
-```bash
-npm run build
+```ts
+$effect(() => {
+  // Persist data to localStorage whenever values change
+  if (!firstRun) {
+    localStorage.setItem(
+      'waterData',
+      JSON.stringify({
+        waterConsumedSaved: waterConsumed,
+        lastDrinkSaved: lastDrink,
+        dailyGoalSaved: dailyGoal
+      })
+    );
+  } else {
+    // Load saved data on first run
+    // ...
+  }
+});
 ```
 
-You can preview the production build with `npm run preview`.
+## Running the Application
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+```bash
+# Install dependencies
+pnpm install
+
+# Start development server
+pnpm run dev
+
+# Build for production
+pnpm run build
+```
