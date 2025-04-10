@@ -1,5 +1,7 @@
 # Water Tracker
 
+![CleanShot 2025-04-09 at 20 29 02@2x](https://github.com/user-attachments/assets/7d82fd87-83e2-4da2-a503-38490e62f844)
+
 A simple Svelte application that helps track daily water consumption, demonstrating the use of Svelte's reactive state management features.
 
 ## Features
